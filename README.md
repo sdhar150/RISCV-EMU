@@ -3,24 +3,6 @@
 A **RISC-V RV32IM user-mode emulator** capable of running **real ELF binaries** linked against **newlib**.  
 It provides a minimal Linux-like process environment — including heap, stack, and syscalls — while executing instructions with architectural correctness.
 
-This is not a toy or an interpreter.  
-It runs **compiler-generated code** using `printf`, `malloc`, `FILE`, and real ELF relocations.
-
----
-
-## What this project demonstrates
-
-This emulator shows end-to-end understanding of:
-
-- RISC-V ISA and instruction semantics  
-- ELF loading and relocation  
-- ABI and calling conventions  
-- Process memory layout (text, data, bss, heap, stack)  
-- Syscall boundaries  
-- libc integration (`newlib`)  
-
-In other words: it is a **full user-mode runtime for RV32IM**.
-
 ---
 
 ## Key features
