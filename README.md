@@ -59,6 +59,19 @@ This is sufficient to run **newlib** with:
 
 ---
 
+## Build and host requirements
+
+This emulator is **Linux-hosted** and depends on the Linux ELF ABI.
+
+It requires:
+- A Linux system (or WSL on Windows)
+- glibc `<elf.h>` and related ELF ABI headers
+- A RISC-V cross-compiler providing `riscv64-elf-gcc` and newlib
+
+Native Windows (MSYS2/MinGW) and macOS are **not supported** without replacing the ELF loader with a portable implementation.
+
+---
+
 ## Building
 
 ```
@@ -120,8 +133,3 @@ This project implements a **real RISC-V user-mode runtime** comparable to QEMU u
 
 See `docs/architecture.md` and `CONTRIBUTING.md`.
 
----
-
-## Why this exists
-
-Built to demonstrate **full-stack understanding of CPU architecture, ELF, ABI, memory management, and libc integration** in a compact, inspectable codebase.
