@@ -3,6 +3,28 @@
 # ============================================================
 
 # ------------------------------------------------------------
+# Host OS detection
+# ------------------------------------------------------------
+UNAME_S := $(shell uname -s)
+
+ifeq ($(OS),Windows_NT)
+    HOST_OS := windows
+    EXE := .exe
+    MKDIR := mkdir -p
+    RM := rm -f
+else ifeq ($(UNAME_S),Darwin)
+    HOST_OS := macos
+    EXE :=
+    MKDIR := mkdir -p
+    RM := rm -f
+else
+    HOST_OS := linux
+    EXE :=
+    MKDIR := mkdir -p
+    RM := rm -f
+endif
+
+# ------------------------------------------------------------
 # Host compiler (emulator)
 # ------------------------------------------------------------
 CXX       := g++
@@ -33,7 +55,7 @@ CRT0          := $(PLATFORM_DIR)/crt0.S
 # ------------------------------------------------------------
 # Emulator
 # ------------------------------------------------------------
-EMULATOR := $(BIN_DIR)/emulator
+EMULATOR := $(BIN_DIR)/emulator$(EXE)
 
 EMULATOR_SRC := \
 	$(SRC_DIR)/emulator/main.cpp \
@@ -42,7 +64,6 @@ EMULATOR_SRC := \
 # ------------------------------------------------------------
 # Demo programs
 # ------------------------------------------------------------
-
 HELLO_SRC  := $(DEMO_DIR)/hello/hello.c
 HELLO_ELF  := $(DEMO_DIR)/hello/hello.elf
 
@@ -81,7 +102,7 @@ all: emulator demos
 # ============================================================
 
 $(BIN_DIR):
-	mkdir -p $(BIN_DIR)
+	$(MKDIR) $(BIN_DIR)
 
 emulator: $(EMULATOR)
 
@@ -113,19 +134,19 @@ demos: $(DEMO_ELFS)
 
 test: emulator demos
 	@echo "[hello]"
-	$(EMULATOR) $(HELLO_ELF) | grep -q "Hello"
+	./$(EMULATOR) $(HELLO_ELF) | grep -q "Hello"
 
 	@echo "[stdlib]"
-	$(EMULATOR) $(STDLIB_ELF) | grep -q "malloc works"
+	./$(EMULATOR) $(STDLIB_ELF) | grep -q "malloc works"
 
 	@echo "[rpn]"
-	echo "3 4 +" | $(EMULATOR) $(RPN_ELF) | grep -q "7"
+	echo "3 4 +" | ./$(EMULATOR) $(RPN_ELF) | grep -q "7"
 
 	@echo "[io]"
-	echo "abc" | $(EMULATOR) $(CAT_ELF) | grep -q "abc"
+	echo "abc" | ./$(EMULATOR) $(CAT_ELF) | grep -q "abc"
 
 	@echo "[stress]"
-	$(EMULATOR) $(ALLOC_ELF) | grep -q "allocator ok"
+	./$(EMULATOR) $(ALLOC_ELF) | grep -q "allocator ok"
 
 	@echo "All demos passed."
 
@@ -134,5 +155,6 @@ test: emulator demos
 # ============================================================
 
 clean:
-	rm -rf $(BIN_DIR)
-	rm -f $(DEMO_ELFS)
+	$(RM) $(EMULATOR)
+	$(RM) $(DEMO_ELFS)
+	$(RM) -r $(BIN_DIR)
